@@ -46,6 +46,18 @@ type SortableItemProps = {
   readonly keyCode?: string
 }
 
+const toHotKeyLabel = (
+  hotCode: string | null,
+  keyCodeMap: Record<string, string>,
+): string => {
+  if (!hotCode) return ''
+
+  // Fallback to a readable label while keyboard layout map is still loading.
+  return (
+    keyCodeMap[hotCode] ?? hotCode.replace(/^Key/u, '').replace(/^Digit/u, '')
+  )
+}
+
 const SortableItem = ({
   id,
   name,
@@ -108,11 +120,14 @@ const SortableItem = ({
           data-app-id={id}
           maxLength={1}
           minLength={0}
-          onChange={(event) => event.preventDefault()}
           onFocus={(event) => {
             event.target.select()
           }}
-          onKeyPress={(event) => {
+          onKeyDown={(event) => {
+            if (event.key === 'Tab') return
+
+            event.preventDefault()
+
             dispatch(
               updatedHotCode({
                 appName: id,
@@ -201,7 +216,7 @@ export function AppsPane(): ReactElement {
                   icon={icons[id]}
                   id={id}
                   index={index}
-                  keyCode={keyCodeMap[hotCode || '']}
+                  keyCode={toHotKeyLabel(hotCode, keyCodeMap)}
                   name={name}
                 />
               ))}
