@@ -18,6 +18,7 @@ import clsx from 'clsx'
 import { useDispatch } from 'react-redux'
 
 import type { AppName } from '../../../../config/apps.js'
+import Button from '../../../shared/components/atoms/button.js'
 import Input from '../../../shared/components/atoms/input.js'
 import { Spinner } from '../../../shared/components/atoms/spinner.js'
 import type { InstalledApp } from '../../../shared/state/hooks.js'
@@ -26,8 +27,15 @@ import {
   useInstalledApps,
   useKeyCodeMap,
 } from '../../../shared/state/hooks.js'
-import { reorderedApp, updatedHotCode } from '../../state/actions.js'
+import {
+  closedRegexModal,
+  openedRegexModal,
+  reorderedApp,
+  updatedHotCode,
+  updatedRegexPatterns,
+} from '../../state/actions.js'
 import { Pane } from '../molecules/pane.js'
+import RegexModal from './regex-modal.js'
 
 type SortableItemProps = {
   readonly id: InstalledApp['name']
@@ -63,9 +71,6 @@ const SortableItem = ({
   return (
     <div
       ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
       className={clsx(
         'flex',
         'bg-black/5 shadow dark:bg-white/5',
@@ -74,9 +79,18 @@ const SortableItem = ({
         isDragging &&
           'focus-visible:ring-2 focus-visible:ring-gray-900 dark:focus-visible:ring-gray-100',
       )}
+      style={style}
     >
       <div className="flex w-16 items-center justify-center p-4">
-        {index + 1}
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab rounded px-2 py-1 active:cursor-grabbing"
+          title={`Drag to reorder ${name}`}
+          type="button"
+        >
+          {index + 1}
+        </button>
       </div>
       <div className="flex grow items-center p-4">
         <img
@@ -109,6 +123,13 @@ const SortableItem = ({
           type="text"
           value={keyCode}
         />
+        <Button
+          className="ml-2 size-8 opacity-70 hover:opacity-100"
+          onClick={() => dispatch(openedRegexModal({ appName: id }))}
+          title={`Set RegEx patterns for ${name}`}
+        >
+          ⚙️
+        </Button>
       </div>
     </div>
   )
@@ -144,42 +165,70 @@ export function AppsPane(): JSX.Element {
 
   const keyCodeMap = useKeyCodeMap()
 
-  return (
-    <Pane pane="apps">
-      {installedApps.length === 0 && (
-        <div className="flex h-full items-center justify-center">
-          <Spinner />
-        </div>
-      )}
+  const regexModalApp = useDeepEqualSelector(
+    (state) => state.data.regexModalApp,
+  )
 
-      <div className="overflow-y-auto p-2">
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={onDragEnd}
-          sensors={sensors}
-        >
-          <SortableContext
-            items={installedApps}
-            strategy={verticalListSortingStrategy}
+  const regexPatterns = useDeepEqualSelector((state) => {
+    if (!regexModalApp) return []
+    const app = state.storage.apps.find((a) => a.name === regexModalApp)
+    return app?.regexPatterns ?? []
+  })
+
+  return (
+    <>
+      <Pane pane="apps">
+        {installedApps.length === 0 && (
+          <div className="flex h-full items-center justify-center">
+            <Spinner />
+          </div>
+        )}
+
+        <div className="overflow-y-auto p-2">
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+            sensors={sensors}
           >
-            {installedApps.map(({ id, name, hotCode }, index) => (
-              <SortableItem
-                key={id}
-                icon={icons[id]}
-                id={id}
-                index={index}
-                keyCode={keyCodeMap[hotCode || '']}
-                name={name}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
-      </div>
-      {installedApps.length > 1 && (
-        <p className="mt-2 text-sm opacity-70">
-          Drag and drop to sort the list of apps.
-        </p>
-      )}
-    </Pane>
+            <SortableContext
+              items={installedApps}
+              strategy={verticalListSortingStrategy}
+            >
+              {installedApps.map(({ id, name, hotCode }, index) => (
+                <SortableItem
+                  key={id}
+                  icon={icons[id]}
+                  id={id}
+                  index={index}
+                  keyCode={keyCodeMap[hotCode || '']}
+                  name={name}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </div>
+        {installedApps.length > 1 && (
+          <p className="mt-2 text-sm opacity-70">
+            Drag and drop to sort the list of apps.
+          </p>
+        )}
+      </Pane>
+
+      <RegexModal
+        appName={regexModalApp}
+        initialPatterns={regexPatterns}
+        onClose={() => dispatch(closedRegexModal())}
+        onSave={(patterns) => {
+          if (regexModalApp)
+            dispatch(
+              updatedRegexPatterns({
+                appName: regexModalApp,
+                patterns,
+              }),
+            )
+          dispatch(closedRegexModal())
+        }}
+      />
+    </>
   )
 }

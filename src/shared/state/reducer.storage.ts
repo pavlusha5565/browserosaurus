@@ -15,12 +15,14 @@ import {
   confirmedReset,
   reorderedApp,
   updatedHotCode,
+  updatedRegexPatterns,
 } from '../../renderers/prefs/state/actions.js'
 
 type Storage = {
   apps: {
     name: AppName
     hotCode: string | null
+    regexPatterns: string[]
     isInstalled: boolean
   }[]
   supportMessage: number
@@ -65,6 +67,7 @@ const storage = createReducer<Storage>(defaultStorage, (builder) =>
             hotCode: null,
             isInstalled: true,
             name: installedAppName,
+            regexPatterns: [],
           })
         }
       }
@@ -111,6 +114,16 @@ const storage = createReducer<Storage>(defaultStorage, (builder) =>
 
       const [removed] = state.apps.splice(sourceIndex, 1)
       state.apps.splice(destinationIndex, 0, removed)
+    })
+
+    .addCase(updatedRegexPatterns, (state, action) => {
+      const appIndex = state.apps.findIndex(
+        (app) => app.name === action.payload.appName,
+      )
+
+      if (appIndex !== -1) {
+        state.apps[appIndex].regexPatterns = action.payload.patterns
+      }
     }),
 )
 

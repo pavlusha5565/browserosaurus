@@ -25,6 +25,16 @@ const reorderedApp = prefs<{ sourceName: AppName; destinationName: AppName }>(
   'app/reordered',
 )
 
+const openedRegexModal = prefs<{ appName: AppName }>(
+  'regex-modal/opened',
+)
+
+const closedRegexModal = prefs('regex-modal/closed')
+
+const updatedRegexPatterns = prefs<{ appName: AppName; patterns: string[] }>(
+  'regex-patterns/updated',
+)
+
 const clickedHomepageButton = prefs('homepage-button/clicked')
 const clickedOpenIssueButton = prefs('open-issue-button/clicked')
 
@@ -36,8 +46,11 @@ export {
   clickedTabButton,
   clickedUpdateButton,
   clickedUpdateRestartButton,
+  closedRegexModal,
   confirmedReset,
+  openedRegexModal,
   reorderedApp,
   startedPrefs,
   updatedHotCode,
+  updatedRegexPatterns,
 }
