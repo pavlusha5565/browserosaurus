@@ -25,7 +25,6 @@ import {
 import type { Middleware } from '../../shared/state/model.js'
 import type { RootState } from '../../shared/state/reducer.root.js'
 import { database } from '../database.js'
-import { wasOpenedByUrl } from '../main.js'
 import { createTray, destroyTray } from '../tray.js'
 import copyUrlToClipboard from '../utils/copy-url-to-clipboard.js'
 import { getAppIcons } from '../utils/get-app-icons.js'
@@ -94,14 +93,11 @@ export const actionHubMiddleware =
       // Hide from dock and cmd-tab
       app.dock.hide()
       createWindows()
-      createTray()
+      if (nextState.storage.showInTray) {
+        createTray()
+      }
       initUpdateChecker()
       getInstalledAppNames()
-
-      // Open prefs if the app was launched directly by the user (not via URL)
-      if (!wasOpenedByUrl) {
-        setTimeout(() => showPrefsWindow(), 500)
-      }
     }
 
     // When a renderer starts, send down all the locally stored data

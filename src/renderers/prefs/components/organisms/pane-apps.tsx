@@ -15,6 +15,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import clsx from 'clsx'
+import type { ReactElement } from 'react'
 import { useDispatch } from 'react-redux'
 
 import type { AppName } from '../../../../config/apps.js'
@@ -135,7 +136,7 @@ const SortableItem = ({
   )
 }
 
-export function AppsPane(): JSX.Element {
+export function AppsPane(): ReactElement {
   const dispatch = useDispatch()
 
   const installedApps = useInstalledApps().map((installedApp) => ({
@@ -214,21 +215,23 @@ export function AppsPane(): JSX.Element {
         )}
       </Pane>
 
-      <RegexModal
-        appName={regexModalApp}
-        initialPatterns={regexPatterns}
-        onClose={() => dispatch(closedRegexModal())}
-        onSave={(patterns) => {
-          if (regexModalApp)
-            dispatch(
-              updatedRegexPatterns({
-                appName: regexModalApp,
-                patterns,
-              }),
-            )
-          dispatch(closedRegexModal())
-        }}
-      />
+      {regexModalApp ? (
+        <RegexModal
+          appName={regexModalApp}
+          initialPatterns={regexPatterns}
+          onClose={() => dispatch(closedRegexModal())}
+          onSave={(patterns) => {
+            if (regexModalApp)
+              dispatch(
+                updatedRegexPatterns({
+                  appName: regexModalApp,
+                  patterns,
+                }),
+              )
+            dispatch(closedRegexModal())
+          }}
+        />
+      ) : null}
     </>
   )
 }

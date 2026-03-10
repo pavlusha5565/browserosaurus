@@ -19,6 +19,7 @@
   "scripts": {
     "doctor": "npm run lint && npm run typecheck && npm run test",
     "icns": "cd ./src/shared/static/icon && ../../../../scripts/png2icns.sh icon.png",
+    "install:local": "./scripts/build-and-install-local.sh",
     "lint": "eslint .",
     "list-apps": "ts-node ./scripts/list-installed-apps",
     "make": "electron-forge make --arch=x64,arm64",
