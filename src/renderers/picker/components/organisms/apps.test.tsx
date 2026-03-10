@@ -30,7 +30,7 @@ beforeAll(() => {
 test('kitchen sink', async () => {
   render(<Wrapper />)
   const win = new electron.BrowserWindow()
-  await win.webContents.send(
+  win.webContents.send(
     Channel.MAIN,
     retrievedInstalledApps(['Firefox', 'Safari', 'Brave Browser']),
   )
@@ -82,6 +82,7 @@ test('kitchen sink', async () => {
         ],
         height: 200,
         isSetup: true,
+        showInTray: true,
         supportMessage: -1,
       },
     }),
@@ -144,6 +145,7 @@ test('should show spinner when no installed apps are found', async () => {
         ],
         height: 200,
         isSetup: true,
+        showInTray: true,
         supportMessage: -1,
       },
     }),
@@ -171,6 +173,7 @@ test('should use hotkey', async () => {
         ],
         height: 200,
         isSetup: true,
+        showInTray: true,
         supportMessage: -1,
       },
     }),
@@ -215,6 +218,7 @@ test('should use hotkey with alt', async () => {
         ],
         height: 200,
         isSetup: true,
+        showInTray: true,
         supportMessage: -1,
       },
     }),
@@ -279,6 +283,7 @@ test('should order tiles', async () => {
         apps: [],
         height: 200,
         isSetup: true,
+        showInTray: true,
         supportMessage: -1,
       },
     }),

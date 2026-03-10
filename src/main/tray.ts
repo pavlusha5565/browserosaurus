@@ -43,3 +43,13 @@ export function createTray(): void {
     ]),
   )
 }
+
+/**
+ * Destroy tray icon
+ */
+export function destroyTray(): void {
+  if (tray) {
+    tray.destroy()
+    tray = undefined
+  }
+}

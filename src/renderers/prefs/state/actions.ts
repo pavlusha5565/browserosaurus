@@ -25,9 +25,7 @@ const reorderedApp = prefs<{ sourceName: AppName; destinationName: AppName }>(
   'app/reordered',
 )
 
-const openedRegexModal = prefs<{ appName: AppName }>(
-  'regex-modal/opened',
-)
+const openedRegexModal = prefs<{ appName: AppName }>('regex-modal/opened')
 
 const closedRegexModal = prefs('regex-modal/closed')
 
@@ -37,6 +35,8 @@ const updatedRegexPatterns = prefs<{ appName: AppName; patterns: string[] }>(
 
 const clickedHomepageButton = prefs('homepage-button/clicked')
 const clickedOpenIssueButton = prefs('open-issue-button/clicked')
+
+const toggledTrayVisibility = prefs<boolean>('tray-visibility/toggled')
 
 export {
   clickedHomepageButton,
@@ -51,6 +51,7 @@ export {
   openedRegexModal,
   reorderedApp,
   startedPrefs,
+  toggledTrayVisibility,
   updatedHotCode,
   updatedRegexPatterns,
 }

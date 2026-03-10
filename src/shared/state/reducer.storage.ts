@@ -14,6 +14,7 @@ import {
 import {
   confirmedReset,
   reorderedApp,
+  toggledTrayVisibility,
   updatedHotCode,
   updatedRegexPatterns,
 } from '../../renderers/prefs/state/actions.js'
@@ -25,15 +26,17 @@ type Storage = {
     regexPatterns: string[]
     isInstalled: boolean
   }[]
-  supportMessage: number
-  isSetup: boolean
   height: number
+  isSetup: boolean
+  showInTray: boolean
+  supportMessage: number
 }
 
 const defaultStorage: Storage = {
   apps: [],
   height: 200,
   isSetup: false,
+  showInTray: true,
   supportMessage: 0,
 }
 
@@ -124,6 +127,10 @@ const storage = createReducer<Storage>(defaultStorage, (builder) =>
       if (appIndex !== -1) {
         state.apps[appIndex].regexPatterns = action.payload.patterns
       }
+    })
+
+    .addCase(toggledTrayVisibility, (state, action) => {
+      state.showInTray = action.payload
     }),
 )
 

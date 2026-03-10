@@ -20,18 +20,19 @@ import {
   clickedUpdateRestartButton,
   confirmedReset,
   startedPrefs,
+  toggledTrayVisibility,
 } from '../../renderers/prefs/state/actions.js'
 import type { Middleware } from '../../shared/state/model.js'
 import type { RootState } from '../../shared/state/reducer.root.js'
 import { database } from '../database.js'
-import { createTray } from '../tray.js'
+import { wasOpenedByUrl } from '../main.js'
+import { createTray, destroyTray } from '../tray.js'
 import copyUrlToClipboard from '../utils/copy-url-to-clipboard.js'
 import { getAppIcons } from '../utils/get-app-icons.js'
 import { getInstalledAppNames } from '../utils/get-installed-app-names.js'
 import { initUpdateChecker } from '../utils/init-update-checker.js'
 import { matchesRegexPatterns } from '../utils/matches-regex-patterns.js'
 import { openApp } from '../utils/open-app.js'
-// import { removeWindowsFromMemory } from '../utils/remove-windows-from-memory'
 import {
   createWindows,
   pickerWindow,
@@ -96,6 +97,11 @@ export const actionHubMiddleware =
       createTray()
       initUpdateChecker()
       getInstalledAppNames()
+
+      // Open prefs if the app was launched directly by the user (not via URL)
+      if (!wasOpenedByUrl) {
+        setTimeout(() => showPrefsWindow(), 500)
+      }
     }
 
     // When a renderer starts, send down all the locally stored data
@@ -238,6 +244,15 @@ export const actionHubMiddleware =
     // Get app icons
     else if (retrievedInstalledApps.match(action)) {
       getAppIcons(nextState.storage.apps)
+    }
+
+    // Toggle tray visibility
+    else if (toggledTrayVisibility.match(action)) {
+      if (action.payload) {
+        createTray()
+      } else {
+        destroyTray()
+      }
     }
 
     return result
