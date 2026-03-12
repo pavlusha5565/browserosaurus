@@ -143,6 +143,7 @@ const SortableItem = ({
           className="ml-2 size-8 opacity-70 hover:opacity-100"
           onClick={() => dispatch(openedRegexModal({ appName: id }))}
           title={`Set RegEx patterns for ${name}`}
+          aria-label={`Set RegEx patterns for ${name}`}
         >
           ⚙️
         </Button>

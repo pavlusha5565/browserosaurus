@@ -75,8 +75,7 @@ const RegexPatternsList = ({
   return (
     <div className="space-y-4">
       <p className="text-sm opacity-70">
-        URL будет открываться в этом браузере, если совпадет хотя бы один из
-        паттернов
+        URLs will open in this browser if they match at least one pattern.
       </p>
 
       <div className="space-y-3">
@@ -91,6 +90,7 @@ const RegexPatternsList = ({
                 onChange={(e) => handlePatternChange(index, e.target.value)}
                 placeholder="e.g., ^https://github\\.com"
                 value={value}
+                aria-label={`Regex pattern ${index + 1}`}
               />
               <button
                 className={clsx(

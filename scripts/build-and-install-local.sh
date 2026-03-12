@@ -3,8 +3,8 @@
 # Скрипт для сборки, ad-hoc подписи и установки Browserosaurus локально
 # Использует ad-hoc подпись (не требует Apple Developer аккаунт)
 
-set -e  # Выход при ошибкеecho "🚀 Начинаю сборку Browserosaurus..."
-
+set -e  # Выход при ошибке
+echo "🚀 Начинаю сборку Browserosaurus..."
 # Определяем архитектуру
 ARCH=$(uname -m)
 if [ "$ARCH" = "arm64" ]; then
