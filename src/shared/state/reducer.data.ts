@@ -20,7 +20,9 @@ import {
 } from '../../renderers/picker/state/actions.js'
 import {
   clickedTabButton,
+  closedRegexModal,
   confirmedReset,
+  openedRegexModal,
   startedPrefs,
 } from '../../renderers/prefs/state/actions.js'
 import { gotKeyLayoutMap } from '../../renderers/shared/state/actions.js'
@@ -39,6 +41,7 @@ type Data = {
   scanStatus: 'init' | 'scanned' | 'scanning'
   icons: Partial<Record<AppName, string>>
   activeAppIndex: number
+  regexModalApp: AppName | null
 }
 
 const defaultData: Data = {
@@ -49,6 +52,7 @@ const defaultData: Data = {
   pickerStarted: false,
   prefsStarted: false,
   prefsTab: 'general',
+  regexModalApp: null,
   scanStatus: 'init',
   updateStatus: 'no-update',
   url: '',
@@ -115,6 +119,14 @@ const data = createReducer<Data>(defaultData, (builder) =>
 
     .addCase(clickedUpdateBar, (state) => {
       state.prefsTab = 'general'
+    })
+
+    .addCase(openedRegexModal, (state, action) => {
+      state.regexModalApp = action.payload.appName
+    })
+
+    .addCase(closedRegexModal, (state) => {
+      state.regexModalApp = null
     }),
 )
 

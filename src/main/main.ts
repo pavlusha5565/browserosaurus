@@ -3,13 +3,18 @@ import electron, { app } from 'electron'
 import { sleep } from 'tings'
 
 import { Channel } from '../shared/state/channels.js'
-import { openedUrl, readiedApp } from './state/actions.js'
+import { clickedOpenPrefs, openedUrl, readiedApp } from './state/actions.js'
 import { dispatch, getState } from './state/store.js'
 
 app.on('ready', () => dispatch(readiedApp()))
 
 // App doesn't always close on ctrl-c in console, this fixes that
 app.on('before-quit', () => app.exit())
+
+// On macOS, when user clicks the app icon (manual launch), open preferences
+app.on('activate', () => {
+  dispatch(clickedOpenPrefs())
+})
 
 app.on('open-url', (event, url) => {
   event.preventDefault()

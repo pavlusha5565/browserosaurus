@@ -8,6 +8,7 @@ import {
   clickedUpdateButton,
   clickedUpdateRestartButton,
   confirmedReset,
+  toggledTrayVisibility,
 } from '../../state/actions.js'
 import { Pane } from '../molecules/pane.js'
 
@@ -48,8 +49,10 @@ export const GeneralPane = (): JSX.Element => {
     (state) => state.storage.apps.filter((app) => app.isInstalled).length,
   )
 
+  const showInTray = useSelector((state) => state.storage.showInTray)
+
   return (
-    <Pane className="space-y-8" pane="general">
+    <Pane className="space-y-8 overflow-y-auto pr-2" pane="general">
       <Row>
         <Left>Default web browser:</Left>
         <Right>
@@ -97,6 +100,27 @@ export const GeneralPane = (): JSX.Element => {
             </Button>
           )}
           {updateStatus === 'no-update' && 'No update available'}
+        </Right>
+      </Row>
+
+      <Row>
+        <Left>Show in Status Bar:</Left>
+        <Right>
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              checked={showInTray}
+              className="size-4 cursor-pointer"
+              onChange={(e) =>
+                dispatch(toggledTrayVisibility(e.target.checked))
+              }
+              type="checkbox"
+            />
+            <span>Display icon in menu bar</span>
+          </label>
+          <p className="mt-2 text-sm opacity-70">
+            Toggle the Browserosaurus icon in the macOS menu bar. Uncheck to
+            hide the icon.
+          </p>
         </Right>
       </Row>
 
